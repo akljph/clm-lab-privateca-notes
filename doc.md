@@ -25,3 +25,13 @@ akeyless create-pki-cert-issuer \
   --expiration-event-in 1 \
   --description 'Restricted Nginx TLS issuer for the CLM training lab' \
   --uid-token '[[ Instruqt-Var key="UID_TOKEN" hostname="track-host" ]]'
+
+## Important notes on behavior:
+
+- Do not use **--allow-any-name**. It would defeat the hostname restriction established by **--allowed-domains**.
+- **--allow-subdomains** is not required because this issuer permits only one exact hostname.
+- **--destination-path** is required for stored-certificate lifecycle features such as auto-renewal and CRL management.
+- Renewal is scheduled 30 days before the certificate's actual expiration date. The 30-, 7-, and 1-day expiration events provide operational visibility. After a successful automatic renewal, the new certificate version receives a new expiration date.
+- Client-authentication and code-signing flags are intentionally excluded.
+- **--allowed-ip-sans** and **--allowed-uri-sans** are omitted because this server needs only a DNS SAN.
+- The 90-day lifetime is intentionally much shorter than the CA lifetime. Do not repeat **--ttl**, and do not request a leaf lifetime equal to the CA lifetime.
